@@ -3,14 +3,14 @@
 
 //#define SERIAL_OUT
 
-const int upDownPin = A0;   
-const int leftRightPin = A1; 
+const int upDownPin = A1;   
+const int leftRightPin = A0; 
 const int slaveSelectPin = 10;
-const int zoomInButtonPin = 3;
-const int zoomOutButtonPin = 4;
-const int refreshButtonPin = 2;
-const int encoderPinA = 0;
-const int encoderPinB = 1;
+const int zoomInButtonPin = 6;
+const int zoomOutButtonPin = 12;
+const int refreshButtonPin = 7;
+const int encoderPinA = 8;
+const int encoderPinB = 9;
 
 Switch zoomInButton   = Switch(zoomInButtonPin);
 Switch zoomOutButton  = Switch(zoomOutButtonPin);
@@ -27,7 +27,7 @@ const int64_t dc_max = 33554432;
 
 const float maxRate = 300; // 300 pixels per second
 const int HD = 800, VD = 600; // 800x600 pixels
-const int deadzone = 10; 
+const int deadzone = 50; 
 const int JS_UpdatePeriod = 50; // msec
 const float rateSF = maxRate * (0.001 * (float)JS_UpdatePeriod);
 
