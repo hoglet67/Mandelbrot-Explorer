@@ -23,7 +23,21 @@ entity MandlebrotTop is
 	  VGA_GREEN : out  STD_LOGIC_VECTOR (3 downto 0);
 	  VGA_BLUE : out  STD_LOGIC_VECTOR (3 downto 0);
 	  -- To Arduino
-	  ARD_RESET: out std_logic);
+	  ARD_RESET: out std_logic;
+     SW1 : in std_logic;
+     -- Switch inputs
+     SW_LEFT : in std_logic;
+     SW_RIGHT : in std_logic;
+     SW_UP : in std_logic;
+     SW_DOWN : in std_logic;
+     SW_RST : in std_logic;
+     -- Switch outputs
+     JS1_SELECT : out std_logic;
+     JS1_LEFT : out std_logic;
+     JS1_RIGHT : out std_logic;
+     JS1_FIRE1 : out std_logic;
+     JS1_FIRE2 : out std_logic
+     );
 end MandlebrotTop;
 
 architecture Behavioral of MandlebrotTop is
@@ -164,7 +178,15 @@ architecture Behavioral of MandlebrotTop is
 	
 	
 begin
-  ard_reset <= '1'; -- Set arduino reset high, allows AVR chip to run
+  -- Allow SW1 to control reset on Arduino, for testing
+  ard_reset  <= SW1;
+
+  -- Loop switches through to JS1, so they can be seen by Arduino
+  JS1_LEFT   <= '0' when SW_LEFT  = '1' else 'Z';
+  JS1_RIGHT  <= '0' when SW_RIGHT = '1' else 'Z';
+  JS1_FIRE1  <= '0' when SW_UP    = '1' else 'Z';
+  JS1_FIRE2  <= '0' when SW_DOWN  = '1' else 'Z';
+  JS1_SELECT <= '0' when SW_RST   = '1' else 'Z';
 
   clk_mgr: clk_manager
   port map
