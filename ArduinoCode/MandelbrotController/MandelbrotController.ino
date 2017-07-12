@@ -9,12 +9,14 @@ const int slaveSelectPin = 10;
 const int zoomInButtonPin = 6;
 const int zoomOutButtonPin = 12;
 const int refreshButtonPin = 7;
-const int encoderPinA = 8;
-const int encoderPinB = 9;
+const int cycleLeftButtonPin = 8;
+const int cycleRightButtonPin = 9;
 
 Switch zoomInButton   = Switch(zoomInButtonPin);
 Switch zoomOutButton  = Switch(zoomOutButtonPin);
 Switch refreshButton  = Switch(refreshButtonPin);
+Switch cycleLeftButton  = Switch(cycleLeftButtonPin);
+Switch cycleRightButton  = Switch(cycleRightButtonPin);
 
 #define UPDATE_PX_COMMAND 0x01
 #define UPDATE_AREA_COMMAND 0x02
@@ -46,8 +48,6 @@ const int cursorTimeout = 5000;
 void setup() {
   Serial.begin(9600);
   pinMode(slaveSelectPin, OUTPUT);
-  pinMode(encoderPinA, INPUT_PULLUP);
-  pinMode(encoderPinB, INPUT_PULLUP);
   
   SPI.begin(); 
   SPI.beginTransaction (SPISettings (2000000, MSBFIRST, SPI_MODE0));  // 2 MHz clock, MSB first, mode 0
@@ -196,22 +196,22 @@ void sendUpdate40(int64_t num) {
 
 
 int updateEncoderPos() {
-    static int encoderA, encoderB, encoderA_prev;   
+    static int encoderPos = 0;
 
-    static int encoderPos;
+    cycleRightButton.poll();
+    cycleLeftButton.poll();
 
-    encoderA = digitalRead(encoderPinA); 
-    encoderB = digitalRead(encoderPinB);
- 
-    if((!encoderA) && (encoderA_prev)){ // A has gone from high to low 
-      encoderB ? encoderPos++ : encoderPos--;         
+    if (cycleRightButton.pushed()) {
+      encoderPos++;
     }
-    encoderA_prev = encoderA;     
+    if (cycleLeftButton.pushed()) {
+      encoderPos--;
+    }
     // Wrap logic
     if (encoderPos >  max_palattes-1) encoderPos = 0;
     else if (encoderPos < 0) encoderPos = max_palattes-1;  
 
-   return encoderPos;
+    return encoderPos;
 }
 
 
